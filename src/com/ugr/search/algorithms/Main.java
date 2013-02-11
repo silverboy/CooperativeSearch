@@ -13,6 +13,7 @@ public class Main {
         if (args.length < 1) {
             System.out.println("Wrong parameters.");
         } else {
+            System.out.print("Soy javi");
             params.put(Params.DEPTH, 1);
             params.put(Params.TABU_METHOD, 2);
             readParams(args);
