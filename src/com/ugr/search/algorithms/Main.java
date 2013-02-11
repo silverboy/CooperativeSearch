@@ -10,6 +10,7 @@ public class Main {
     private static HashMap<String, Integer> params = new HashMap<String, Integer>();
 
     public static void main(String[] args) {
+        System.out.println("HOLA!!!!");
         if (args.length < 1) {
             System.out.println("Wrong parameters.");
         } else {
