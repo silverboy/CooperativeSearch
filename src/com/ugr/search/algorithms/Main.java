@@ -9,17 +9,15 @@ public class Main {
     private static String filePath;
     private static HashMap<String, Integer> params = new HashMap<String, Integer>();
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args)  {
         if (args.length < 1) {
             System.out.println("Wrong parameters.");
         } else {
-
             params.put(Params.DEPTH, 1);
             params.put(Params.TABU_METHOD, 2);
             readParams(args);
             Parser parser = new Parser(filePath);
-            TabuSearch tabuSearch = new TabuSearch(parser.getPerformances(),
+            TabuSearch tabuSearch = new TabuSearch(0, parser.getPerformances(),
                     parser.getCosts(), parser.getConstraints(), params,
                     parser.getOptimalValue(), 1000, 100);
             System.out.println("Performances:");
@@ -33,7 +31,7 @@ public class Main {
             System.out.println("Fitness inicial: " + tabuSearch.getCurrentSolutionFitness());
 
 
-            tabuSearch.execute();
+            tabuSearch.run();
             System.out.println("Solucion final:");
             Knapsack.printVector(tabuSearch.getBestSolution().getValue());
             System.out.println("Fitness final: "+tabuSearch.getBestSolution().getFitness());

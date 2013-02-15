@@ -1,7 +1,8 @@
 package com.ugr.search.algorithms;
 
-public abstract class Algorithm {
+public abstract class Algorithm extends Thread {
 
+    private int id;
     private int[] performances;
     private int[][] costs;
     private int[] constraints;
@@ -12,7 +13,8 @@ public abstract class Algorithm {
     private int fitnessEvalCount;
     private int fitnessEvalLimit;
 
-    public Algorithm(int[] performances, int[][] costs, int[] constraints, int optimalValue, int fitnessEvalLimit) {
+    public Algorithm(int id, int[] performances, int[][] costs, int[] constraints, int optimalValue, int fitnessEvalLimit) {
+        this.id = id;
         this.performances = performances;
         this.costs = costs;
         this.constraints = constraints;
@@ -25,7 +27,9 @@ public abstract class Algorithm {
 
     public abstract void init();
 
-    public abstract void execute();
+    public int getInstanceNumber() {
+        return id;
+    }
 
     public int calculateFitness(int[] solution) {
         fitnessEvalCount++;
@@ -33,7 +37,7 @@ public abstract class Algorithm {
     }
 
     public boolean fitnessEvalLimitReached() {
-        return (fitnessEvalCount >= fitnessEvalLimit) ? true : false;
+        return fitnessEvalCount >= fitnessEvalLimit;
     }
 
     public double getEvaluationProgress(){

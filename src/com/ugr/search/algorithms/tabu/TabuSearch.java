@@ -37,9 +37,9 @@ public class TabuSearch extends Algorithm {
     private static final byte U_SM = 3;
 
 
-    public TabuSearch(int[] performances, int[][] costs, int[] constraints,
+    public TabuSearch(int id, int[] performances, int[][] costs, int[] constraints,
                       HashMap<String, Integer> params, int optimalValue, int fitnessEvalLimit, int tabuListSize) {
-        super(performances, costs, constraints, optimalValue, fitnessEvalLimit);
+        super(id, performances, costs, constraints, optimalValue, fitnessEvalLimit);
         tabuList = new TabuList(tabuListSize);
         direction = Direction.CONSTRUCTIVE;
         readParams(params);
@@ -79,7 +79,7 @@ public class TabuSearch extends Algorithm {
 
 
     @Override
-    public void execute() {
+    public void run() {
         int iteration = 0;
         boolean solutionChanged;
         while (!fitnessEvalLimitReached()) {
