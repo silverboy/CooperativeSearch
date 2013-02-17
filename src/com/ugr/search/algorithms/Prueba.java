@@ -36,8 +36,9 @@ public class Prueba {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put(Params.DEPTH, 1);
         map.put(Params.TABU_METHOD, 2);
+        map.put(Params.LIST_SIZE, 100);
 
-        TabuSearch tabu = new TabuSearch(c, A, b, map, 0, 5, 100);
+        TabuSearch tabu = new TabuSearch(0,c, A, b, map, 0, 5);
 
         Knapsack.printVector(tabu.getCurrentSolution());
 

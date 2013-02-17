@@ -13,6 +13,10 @@ public abstract class Algorithm extends Thread {
     private int fitnessEvalCount;
     private int fitnessEvalLimit;
 
+    // Monitoring variables
+    private boolean monitor=false;
+    private int evalStep;
+
     public Algorithm(int id, int[] performances, int[][] costs, int[] constraints, int optimalValue, int fitnessEvalLimit) {
         this.id = id;
         this.performances = performances;
@@ -20,7 +24,7 @@ public abstract class Algorithm extends Thread {
         this.constraints = constraints;
         this.optimalValue = optimalValue;
         this.fitnessEvalLimit = fitnessEvalLimit;
-        bestSolution = new BestSolution(null, 0, 0);
+        bestSolution = new BestSolution(optimalValue);
         currentSolutionFitness = 0;
         fitnessEvalCount = 0;
     }
@@ -33,7 +37,17 @@ public abstract class Algorithm extends Thread {
 
     public int calculateFitness(int[] solution) {
         fitnessEvalCount++;
-        return Knapsack.getFitness(solution, performances);
+        int fitness= Knapsack.getFitness(solution, performances);
+        if(monitor && fitnessEvalCount%evalStep==0 ){
+            bestSolution.updateEvolution(fitness);
+        }
+        return fitness;
+    }
+
+    public void enableMonitoring(int step){
+        bestSolution.updateEvolution(currentSolutionFitness);
+        monitor=true;
+        evalStep=step;
     }
 
     public boolean fitnessEvalLimitReached() {

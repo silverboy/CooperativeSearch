@@ -38,9 +38,9 @@ public class TabuSearch extends Algorithm {
 
 
     public TabuSearch(int id, int[] performances, int[][] costs, int[] constraints,
-                      HashMap<String, Integer> params, int optimalValue, int fitnessEvalLimit, int tabuListSize) {
+                      HashMap<String, Integer> params, int optimalValue, int fitnessEvalLimit) {
         super(id, performances, costs, constraints, optimalValue, fitnessEvalLimit);
-        tabuList = new TabuList(tabuListSize);
+        tabuList = new TabuList(params.get(Params.LIST_SIZE));
         direction = Direction.CONSTRUCTIVE;
         readParams(params);
         init();
@@ -67,19 +67,20 @@ public class TabuSearch extends Algorithm {
         if (Knapsack.feasibleKnapsack(solution, getCosts(), getConstraints())) {
             setCurrentSolutionFitness(calculateFitness(solution));
             updateBestSolutionFromCurrent();
+            tabuList.addSolution(solution);
         }
 
     }
 
     @Override
     public int calculateFitness(int[] solution) {
-        tabuList.addSolution(solution);
         return super.calculateFitness(solution);
     }
 
 
     @Override
     public void run() {
+
         int iteration = 0;
         boolean solutionChanged;
         while (!fitnessEvalLimitReached()) {
@@ -90,21 +91,23 @@ public class TabuSearch extends Algorithm {
                     if (solutionChanged) {
                         setCurrentSolutionFitness(calculateFitness(getCurrentSolution()));
                         updateBestSolutionFromCurrent();
+                        tabuList.addSolution(getCurrentSolution());
                     }
                     constructiveComplement();
-                    //tabuInfeasibleAdd(getCurrentSolution(), iteration);
+                    tabuInfeasibleAdd(getCurrentSolution(), iteration);
                     break;
                 case DESTRUCTIVE:
                     direction = Direction.CONSTRUCTIVE;
                     tabuSearchProject(getCurrentSolution(), U_ST);
                     setCurrentSolutionFitness(calculateFitness(getCurrentSolution()));
                     updateBestSolutionFromCurrent();
+                    tabuList.addSolution(getCurrentSolution());
                     destructiveComplement();
                     tabuSearchDrop(getCurrentSolution());
                     break;
             }
-            System.out.println("Solucion actual en iteración "+iteration+" :");
-            Knapsack.printVector(getCurrentSolution());
+            //System.out.println("Solucion actual en iteración "+iteration+" :");
+           // Knapsack.printVector(getCurrentSolution());
             System.out.println("Fitness actual: "+getCurrentSolutionFitness());
             iteration++;
         }
@@ -127,6 +130,7 @@ public class TabuSearch extends Algorithm {
 
     private void tabuSearchProject(int[] solution, byte uMultiplier) {
         boolean feasible = false;
+
         while (!feasible) {
             int item = searchWorstItem(solution, uMultiplier);
             if (item == -1) {
@@ -163,6 +167,9 @@ public class TabuSearch extends Algorithm {
                 updateBestSolutionFromCurrent();
             }
         }
+        if(!tabuList.inTabuList(getCurrentSolution())){
+            tabuList.addSolution(getCurrentSolution());
+        }
     }
 
     private void destructiveComplement() {
@@ -181,6 +188,9 @@ public class TabuSearch extends Algorithm {
                 setCurrentSolutionFitness(newSolutionFitness);
                 updateBestSolutionFromCurrent();
             }
+        }
+        if(!tabuList.inTabuList(getCurrentSolution())){
+            tabuList.addSolution(getCurrentSolution());
         }
     }
 
@@ -234,6 +244,7 @@ public class TabuSearch extends Algorithm {
             count++;
         }
         setCurrentSolutionFitness(calculateFitness(solution));
+        tabuList.addSolution(solution);
     }
 
     private int searchWorstItem(int[] solution, byte uMultiplier) {

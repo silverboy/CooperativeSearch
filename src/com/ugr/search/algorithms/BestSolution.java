@@ -1,5 +1,7 @@
 package com.ugr.search.algorithms;
 
+import java.util.Vector;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Javi
@@ -12,11 +14,16 @@ public class BestSolution {
     private int[] value;
     private int fitness;
     private int numEvaluationFitness;
+    private Vector<Double> evolution;
+    private int optimalFitness;
 
-    BestSolution(int[] value, int fitness, int numEvaluationFitness) {
-        this.value = value;
-        this.fitness = fitness;
-        this.numEvaluationFitness = numEvaluationFitness;
+
+    BestSolution(int optimalFitness) {
+        value = null;
+        fitness = 0;
+        numEvaluationFitness = 0;
+        this.optimalFitness=optimalFitness;
+        evolution=new Vector<Double>();
     }
 
     public int[] getValue() {
@@ -41,6 +48,15 @@ public class BestSolution {
 
     public void setNumEvaluationFitness(int numEvaluationFitness) {
         this.numEvaluationFitness = numEvaluationFitness;
+    }
+
+    public void updateEvolution(int currentFitness){
+        int best=Math.max(fitness,currentFitness);
+        evolution.addElement((double)best/optimalFitness);
+    }
+
+    public Vector<Double> getEvolution(){
+        return evolution;
     }
 
 }
