@@ -3,9 +3,7 @@ package com.ugr.search.algorithms;
 import com.ugr.search.algorithms.BestSolution;
 import com.ugr.search.algorithms.tabu.TabuSearch;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Manager {
 
@@ -20,8 +18,10 @@ public class Manager {
     private int optimalValue;
     private Parser parser;
     private List<HashMap<String,Integer>> params;
-    private List<TabuSearch> tabuSearches;
+    private List<Algorithm> tabuSearches;
     private CooperativeInfo cooperativeInfo;
+
+    private Vector<Double> evolution;
 
 
     public Manager(int[] performances, int[][] costs, int[] constraints,
@@ -38,8 +38,25 @@ public class Manager {
         this.tabuListSize = tabuListSize;
         this.parser = parser;
         this.params = params;
-        this.tabuSearches = new ArrayList<TabuSearch>();
+        this.tabuSearches = new ArrayList<Algorithm>();
         this.cooperativeInfo = new CooperativeInfo(instances);
+    }
+
+    public Manager(Parser parser,List<HashMap<String,Integer>> algorithm,int totalEvaluationsLimit){
+        Algorithm myAlgorithm;
+        int id=0;
+        int eval=totalEvaluationsLimit/algorithm.size();
+        for(HashMap hM:algorithm) {
+            if (hM.get(Params.TYPE) == Params.TABUSEARCH) {
+
+                myAlgorithm = new TabuSearch(id, parser.getPerformances(), parser.getCosts(),
+                        parser.getConstraints(), hM, parser.getOptimalValue(), eval);
+                tabuSearches.add(myAlgorithm);
+                myAlgorithm.enableMonitoring(25);
+                myAlgorithm.start();
+            }
+            id++;
+        }
     }
 
     public void start() {
@@ -52,6 +69,40 @@ public class Manager {
             tabuSearch.start();
         }
     }
+
+
+
+    public void calculateGroupEvolution(){
+
+        Vector<Double> myV=tabuSearches.get(0).getBestSolution().getEvolution();
+        Double[] evol=new Double[myV.size()];
+        myV.copyInto(evol);
+
+        for(int i=1;i<tabuSearches.size();i++){
+            myV=tabuSearches.get(i).getBestSolution().getEvolution();
+
+            int j=0;
+            for(Double element:myV){
+                evol[j]=Math.max(evol[j],element);
+                j++;
+            }
+        }
+
+        evolution= new Vector<Double>(Arrays.asList(evol));
+    }
+
+    public void groupJoin() throws InterruptedException {
+
+        for(Algorithm element:tabuSearches){
+            element.join();
+        }
+    }
+
+    public Vector<Double> getEvolution(){
+        return evolution;
+    }
+
+
 
 
 }
