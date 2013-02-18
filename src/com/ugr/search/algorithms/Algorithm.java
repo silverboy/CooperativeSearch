@@ -17,6 +17,9 @@ public abstract class Algorithm extends Thread {
     private boolean monitor=false;
     private int evalStep;
 
+    private boolean cooperative = false;
+    private CooperativeInfo cooperativeInfo = null;
+
     public Algorithm(int id, int[] performances, int[][] costs, int[] constraints, int optimalValue, int fitnessEvalLimit) {
         this.id = id;
         this.performances = performances;
@@ -33,6 +36,11 @@ public abstract class Algorithm extends Thread {
 
     public int getInstanceNumber() {
         return id;
+    }
+
+    public void setCooperativeExecution(CooperativeInfo cooperativeInfo) {
+        this.cooperativeInfo = cooperativeInfo;
+        this.cooperative = true;
     }
 
     public int calculateFitness(int[] solution) {
@@ -101,5 +109,13 @@ public abstract class Algorithm extends Thread {
 
     public int getOptimalValue() {
         return optimalValue;
+    }
+
+    public boolean isCooperative() {
+        return cooperative;
+    }
+
+    public CooperativeInfo getCooperativeInfo() {
+        return cooperativeInfo;
     }
 }

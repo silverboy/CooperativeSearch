@@ -1,3 +1,5 @@
+package com.ugr.search.algorithms;
+
 import com.ugr.search.algorithms.BestSolution;
 
 public class CooperativeInfo {
