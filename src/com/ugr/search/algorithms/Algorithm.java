@@ -1,5 +1,7 @@
 package com.ugr.search.algorithms;
 
+import java.util.Vector;
+
 public abstract class Algorithm extends Thread {
 
     private int id;
@@ -12,15 +14,18 @@ public abstract class Algorithm extends Thread {
     private int optimalValue;
     private int fitnessEvalCount;
     private int fitnessEvalLimit;
+    private Vector<Integer> fitnessEvolution;
 
     // Monitoring variables
     private boolean monitor=false;
     private int evalStep;
 
     private boolean cooperative = false;
+    private int cooperativeEval = 1;
     private CooperativeInfo cooperativeInfo = null;
 
-    public Algorithm(int id, int[] performances, int[][] costs, int[] constraints, int optimalValue, int fitnessEvalLimit) {
+    public Algorithm(int id, int[] performances, int[][] costs, int[] constraints,
+                     int optimalValue, int fitnessEvalLimit) {
         this.id = id;
         this.performances = performances;
         this.costs = costs;
@@ -30,6 +35,7 @@ public abstract class Algorithm extends Thread {
         bestSolution = new BestSolution(optimalValue);
         currentSolutionFitness = 0;
         fitnessEvalCount = 0;
+        fitnessEvolution = new Vector<Integer>();
     }
 
     public abstract void init();
@@ -41,6 +47,7 @@ public abstract class Algorithm extends Thread {
     public void setCooperativeExecution(CooperativeInfo cooperativeInfo) {
         this.cooperativeInfo = cooperativeInfo;
         this.cooperative = true;
+        this.cooperativeEval = 1;
     }
 
     public int calculateFitness(int[] solution) {
@@ -60,6 +67,10 @@ public abstract class Algorithm extends Thread {
 
     public boolean fitnessEvalLimitReached() {
         return fitnessEvalCount >= fitnessEvalLimit;
+    }
+
+    public int getEvaluationCount() {
+        return fitnessEvalCount;
     }
 
     public double getEvaluationProgress(){
@@ -117,5 +128,24 @@ public abstract class Algorithm extends Thread {
 
     public CooperativeInfo getCooperativeInfo() {
         return cooperativeInfo;
+    }
+
+    public int getCooperativeEval() {
+        return cooperativeEval;
+    }
+
+    public void incrementCooperativeEval() {
+        cooperativeEval++;
+    }
+
+    public Vector<Integer> getFitnessEvolution() {
+        return fitnessEvolution;
+    }
+
+    public void addFitnessEvolution(int fitness) {
+        fitnessEvolution.add(0, fitness);
+        if(fitnessEvolution.size() > 5) {
+            fitnessEvolution.remove(5);
+        }
     }
 }

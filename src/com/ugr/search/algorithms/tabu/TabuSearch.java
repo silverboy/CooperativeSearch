@@ -106,9 +106,23 @@ public class TabuSearch extends Algorithm {
                     tabuSearchDrop(getCurrentSolution());
                     break;
             }
-
+            addFitnessEvolution(getBestSolution().getFitness());
+            if(isCooperative()
+                    && getEvaluationCount() >= (getCooperativeEval() * getCooperativeInfo().getEvaluationTime())) {
+                incrementCooperativeEval();
+                getCooperativeInfo().changeInformation(getInstanceNumber(), getBestSolution(), getFitnessEvolution());
+                while(!getCooperativeInfo().continueExecution()) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+                setCurrentSolution(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue());
+            }
             iteration++;
         }
+        getCooperativeInfo().finishExecution(getInstanceNumber(), getBestSolution());
     }
 
     private boolean tabuSearchAdd(int[] solution, byte uMultiplier) {

@@ -24,14 +24,12 @@ public class Manager {
     private Vector<Double> evolution;
 
 
-    public Manager(int[] performances, int[][] costs, int[] constraints,
-                   List<HashMap<String,Integer>> params, int optimalValue,
-                   boolean  cooperative, int instances, int numberOfEvaluations,
-                   int tabuListSize, Parser parser) {
-        this.performances = performances;
-        this.costs = costs;
-        this.constraints = constraints;
-        this.optimalValue = optimalValue;
+    public Manager(Parser parser, boolean cooperative, int instances, int numberOfEvaluations,
+                   int tabuListSize, List<HashMap<String, Integer>> params) {
+        this.performances = parser.getPerformances();
+        this.costs = parser.getCosts();
+        this.constraints = parser.getConstraints();
+        this.optimalValue = parser.getOptimalValue();
         this.cooperative = cooperative;
         this.instances = instances;
         this.numberOfEvaluations = numberOfEvaluations;
@@ -39,10 +37,11 @@ public class Manager {
         this.parser = parser;
         this.params = params;
         this.tabuSearches = new ArrayList<Algorithm>();
-        this.cooperativeInfo = new CooperativeInfo(instances);
+        this.cooperativeInfo = new CooperativeInfo(instances, numberOfEvaluations/instances);
     }
 
-    public Manager(Parser parser,List<HashMap<String,Integer>> algorithm,int totalEvaluationsLimit,int groupMonitorStep){
+    public Manager(Parser parser,List<HashMap<String,Integer>> algorithm,int totalEvaluationsLimit,
+                   int groupMonitorStep){
         Algorithm myAlgorithm;
         int id=0;
         int evaluations=totalEvaluationsLimit/algorithm.size();
@@ -50,7 +49,6 @@ public class Manager {
 
         for(HashMap hM:algorithm) {
             if (hM.get(Params.TYPE) == Params.TABUSEARCH) {
-
                 myAlgorithm = new TabuSearch(id, parser.getPerformances(), parser.getCosts(),
                         parser.getConstraints(), hM, parser.getOptimalValue(), evaluations);
                 tabuSearches.add(myAlgorithm);
@@ -70,9 +68,20 @@ public class Manager {
             tabuSearches.add(tabuSearch);
             tabuSearch.start();
         }
+        while(!cooperativeInfo.allInstancesFinished()) {
+            if(cooperativeInfo.allInstancesStopped()) {
+                cooperativeInfo.updateAlgorithmSolution();
+            } else {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        }
+        //IMPRIMIR BEST SOLUTION
+        cooperativeInfo.getBestSolution();
     }
-
-
 
     public void calculateGroupEvolution(){
 
