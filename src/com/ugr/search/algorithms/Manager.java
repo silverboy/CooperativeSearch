@@ -42,17 +42,19 @@ public class Manager {
         this.cooperativeInfo = new CooperativeInfo(instances);
     }
 
-    public Manager(Parser parser,List<HashMap<String,Integer>> algorithm,int totalEvaluationsLimit){
+    public Manager(Parser parser,List<HashMap<String,Integer>> algorithm,int totalEvaluationsLimit,int groupMonitorStep){
         Algorithm myAlgorithm;
         int id=0;
-        int eval=totalEvaluationsLimit/algorithm.size();
+        int evaluations=totalEvaluationsLimit/algorithm.size();
+        int step=groupMonitorStep/algorithm.size();
+
         for(HashMap hM:algorithm) {
             if (hM.get(Params.TYPE) == Params.TABUSEARCH) {
 
                 myAlgorithm = new TabuSearch(id, parser.getPerformances(), parser.getCosts(),
-                        parser.getConstraints(), hM, parser.getOptimalValue(), eval);
+                        parser.getConstraints(), hM, parser.getOptimalValue(), evaluations);
                 tabuSearches.add(myAlgorithm);
-                myAlgorithm.enableMonitoring(25);
+                myAlgorithm.enableMonitoring(step);
                 myAlgorithm.start();
             }
             id++;

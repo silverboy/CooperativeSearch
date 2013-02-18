@@ -18,8 +18,12 @@ public class Main {
             System.out.println("Wrong parameters.");
         } else {
 
+            int evaluationLimit=1000;
+            int monitorStep=20;
+            int runs=30;
+
             params.put(Params.DEPTH, 1);
-            params.put(Params.TABU_METHOD, 3);
+            params.put(Params.TABU_METHOD, 2);
             params.put(Params.LIST_SIZE,100);
             readParams(args);
 
@@ -34,14 +38,14 @@ public class Main {
                 Parser parser = new Parser(filePath);
 
                 // 30 runs of algorithm
-                Vector<Algorithm> instances=createAlgorithms(30,parser);
+                Vector<Algorithm> instances=createAlgorithms(runs,parser,evaluationLimit,monitorStep);
 
                 // Write results in CSV file
                 String outputFile = "./results/";
                 int start=filePath.lastIndexOf('/')+1;
                 int end=filePath.indexOf(".dat");
 
-                outputFile+=filePath.substring(start,end)+"_v2only.dat";
+                outputFile+=filePath.substring(start,end)+"_v1only.dat";
 
                 writeCSV(outputFile,instances);
             }
@@ -69,7 +73,7 @@ public class Main {
         }
     }
 
-    private static Vector<Algorithm> createAlgorithms(int n, Parser parser){
+    private static Vector<Algorithm> createAlgorithms(int n, Parser parser, int evaluationLimit, int monitorStep){
 
         Vector<Algorithm> instances=new Vector<Algorithm>();
 
@@ -77,9 +81,9 @@ public class Main {
 
             Algorithm myTabu = new TabuSearch(0,parser.getPerformances(),
                     parser.getCosts(), parser.getConstraints(), params,
-                    parser.getOptimalValue(), 1000);
+                    parser.getOptimalValue(), evaluationLimit);
 
-            myTabu.enableMonitoring(25);
+            myTabu.enableMonitoring(monitorStep);
             myTabu.start();
             instances.addElement(myTabu);
         }
@@ -87,13 +91,14 @@ public class Main {
         return instances;
     }
 
-    private static Vector<AlgorithmGroup> createAlgorithmGroups(int n, Parser parser,List<HashMap<String,Integer>> hashMapList){
+    private static Vector<Manager> createAlgorithmManagers(int numberOfManager, Parser parser, List<HashMap<String, Integer>> hashMapList,
+                                                           int evaluationLimit,int groupMonitorStep){
 
-        Vector<AlgorithmGroup> instances=new Vector<AlgorithmGroup>();
+        Vector<Manager> instances=new Vector<Manager>();
 
-        for(int i=0;i<n;i++){
+        for(int i=0;i<numberOfManager;i++){
 
-            AlgorithmGroup myTabuGroup = new AlgorithmGroup(parser,hashMapList,1000);
+            Manager myTabuGroup = new Manager(parser,hashMapList,evaluationLimit,groupMonitorStep);
             instances.addElement(myTabuGroup);
         }
 
@@ -129,13 +134,13 @@ public class Main {
         }
     }
 
-    private static void writeGroupCSV(String outputFile,Vector<AlgorithmGroup> instances){
+    private static void writeGroupCSV(String outputFile, Vector<Manager> instances){
 
         try{
             // use FileWriter constructor that specifies open for appending
             FileWriter file=new FileWriter(outputFile,false);
 
-            for(AlgorithmGroup myTabuGroup : instances){
+            for(Manager myTabuGroup : instances){
 
                 // Wait algorithmGroup threads finish
                 myTabuGroup.groupJoin();
