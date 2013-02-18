@@ -106,9 +106,7 @@ public class TabuSearch extends Algorithm {
                     tabuSearchDrop(getCurrentSolution());
                     break;
             }
-            //System.out.println("Solucion actual en iteración "+iteration+" :");
-           // Knapsack.printVector(getCurrentSolution());
-            System.out.println("Fitness actual: "+getCurrentSolutionFitness());
+
             iteration++;
         }
     }
@@ -431,8 +429,8 @@ public class TabuSearch extends Algorithm {
             case U_ST:
                 int[] excess = Knapsack.calculateExcessInConstraints(solution, getCosts(), getConstraints());
                 for (int i = 0; i < uVector.length; i++) {
-                    if (excess[i] < 0) {
-                        uVector[i] = -excess[i];
+                    if (excess[i] > 0) {
+                        uVector[i] = excess[i];
                     } else {
                         uVector[i] = 0;
                     }
