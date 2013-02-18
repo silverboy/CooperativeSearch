@@ -4,6 +4,7 @@ import com.ugr.search.algorithms.tabu.TabuSearch;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 public class Main {
@@ -18,7 +19,7 @@ public class Main {
         } else {
 
             params.put(Params.DEPTH, 1);
-            params.put(Params.TABU_METHOD, 2);
+            params.put(Params.TABU_METHOD, 3);
             params.put(Params.LIST_SIZE,100);
             readParams(args);
 
@@ -40,7 +41,7 @@ public class Main {
                 int start=filePath.lastIndexOf('/')+1;
                 int end=filePath.indexOf(".dat");
 
-                outputFile+=filePath.substring(start,end)+"_v1only.dat";
+                outputFile+=filePath.substring(start,end)+"_v2only.dat";
 
                 writeCSV(outputFile,instances);
             }
@@ -86,6 +87,19 @@ public class Main {
         return instances;
     }
 
+    private static Vector<AlgorithmGroup> createAlgorithmGroups(int n, Parser parser,List<HashMap<String,Integer>> hashMapList){
+
+        Vector<AlgorithmGroup> instances=new Vector<AlgorithmGroup>();
+
+        for(int i=0;i<n;i++){
+
+            AlgorithmGroup myTabuGroup = new AlgorithmGroup(parser,hashMapList,1000);
+            instances.addElement(myTabuGroup);
+        }
+
+        return instances;
+    }
+
     private static void writeCSV(String outputFile,Vector<Algorithm> instances){
 
         try{
@@ -105,6 +119,35 @@ public class Main {
                 file.write(result);
 
                 if(myTabu != instances.lastElement()){
+                    file.write("\n");
+                }
+            }
+            file.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeGroupCSV(String outputFile,Vector<AlgorithmGroup> instances){
+
+        try{
+            // use FileWriter constructor that specifies open for appending
+            FileWriter file=new FileWriter(outputFile,false);
+
+            for(AlgorithmGroup myTabuGroup : instances){
+
+                // Wait algorithmGroup threads finish
+                myTabuGroup.groupJoin();
+                myTabuGroup.calculateGroupEvolution();
+
+
+                String result=myTabuGroup.getEvolution().toString();
+                result=result.replaceAll("\\[","");
+                result=result.replaceAll("\\]","");
+                file.write(result);
+
+                if(myTabuGroup != instances.lastElement()){
                     file.write("\n");
                 }
             }
