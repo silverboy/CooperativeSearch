@@ -5,7 +5,7 @@ import com.ugr.search.algorithms.tabu.TabuSearch;
 
 import java.util.*;
 
-public class Manager {
+public class Manager extends Thread{
 
     private int instances;
     private Parser parser;
@@ -51,7 +51,7 @@ public class Manager {
         }
     }
 
-    public void start() {
+    public void run() {
         int step=groupMonitorStep/instances;
         int evaluations=totalEvaluationsLimit/instances;
         for(int i = 0; i < instances; i++) {
@@ -63,11 +63,10 @@ public class Manager {
             tabuSearch.enableMonitoring(step);
             tabuSearch.start();
         }
-        int i=1;
+
         while(!cooperativeInfo.allInstancesFinished()) {
             if(cooperativeInfo.allInstancesStopped()) {
                 cooperativeInfo.updateAlgorithmSolution();
-                i++;
             } else {
                 try {
                     Thread.sleep(100);

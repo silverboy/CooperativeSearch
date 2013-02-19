@@ -129,7 +129,7 @@ public class TabuSearch extends Algorithm {
             iteration++;
         }
         if(isCooperative()){
-        getCooperativeInfo().finishExecution(getInstanceNumber(), getBestSolution());
+            getCooperativeInfo().finishExecution(getInstanceNumber(), getBestSolution());
         }
     }
 

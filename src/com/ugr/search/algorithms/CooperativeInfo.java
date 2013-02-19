@@ -44,14 +44,14 @@ public class CooperativeInfo {
     }
 
     public boolean allInstancesStopped() {
-        return instancesStopped == instances;
+        return instancesStopped == instances-instancesFinished;
     }
 
     public boolean allInstancesFinished() {
         return instancesFinished == instances;
     }
 
-    public void finishExecution(int id, BestSolution bestSolution) {
+    public synchronized void finishExecution(int id, BestSolution bestSolution) {
         instancesFinished++;
         algorithmSolutions[id] = bestSolution;
     }
@@ -74,6 +74,7 @@ public class CooperativeInfo {
             int evolution = 0;
             if((currentFitnessEval.get(0) - currentFitnessEval.get(currentFitnessEval.size() - 1) < 250) &&
                     bestSolution.getFitness() - algorithmSolutions[id].getFitness() > 250){
+                System.out.println("Cambio solucion  "+id );
                 algorithmSolutions[id] = new BestSolution(bestSolution.getOptimalFitness());
                 algorithmSolutions[id].setValue(Knapsack.copyKnapsackItems(bestSolution.getValue()));
                 algorithmSolutions[id].setFitness(bestSolution.getFitness());

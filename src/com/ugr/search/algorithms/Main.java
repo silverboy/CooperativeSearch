@@ -91,14 +91,20 @@ public class Main {
                 outputFile+=filePath.substring(start,end)+"_v1v2Coop.dat";
 
                 // Group execution
-                Vector<Manager> instances=createCooperativeAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
-                writeGroupCSV(outputFile,instances);
-                System.out.println("Escrito archivo: "+i);
+                //Vector<Manager> instances=createCooperativeAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
+                //writeGroupCSV(outputFile,instances,true);
+                //System.out.println("Escrito archivo: "+i);
 
 
-                    //Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
-                    //myManager.start();
-                    //myManager.calculateGroupEvolution();
+                    Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
+                    myManager.start();
+            try {
+                myManager.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            myManager.calculateGroupEvolution();
+            System.out.println(myManager.getEvolution());
 
 
 
@@ -176,7 +182,6 @@ public class Main {
             Manager myTabuGroup = new Manager(parser,true,4,evaluationLimit,hashMapList,100,groupMonitorStep);
             myTabuGroup.start();
             instances.addElement(myTabuGroup);
-            System.out.println(i);
         }
 
         return instances;
@@ -211,16 +216,24 @@ public class Main {
         }
     }
 
-    private static void writeGroupCSV(String outputFile, Vector<Manager> instances){
+    private static void writeGroupCSV(String outputFile, Vector<Manager> instances,boolean cooperative){
 
         try{
             // use FileWriter constructor that specifies open for appending
             FileWriter file=new FileWriter(outputFile,false);
-
+            int i=0;
             for(Manager myTabuGroup : instances){
 
-                // Wait algorithmGroup threads finish
-                myTabuGroup.groupJoin();
+                if(cooperative){
+                    myTabuGroup.join();
+                    System.out.println("Manager terminado: " + i);
+                    i++;
+                }
+                else{
+                    // Wait algorithmGroup threads finish
+                    myTabuGroup.groupJoin();
+                }
+
                 myTabuGroup.calculateGroupEvolution();
 
 
