@@ -32,21 +32,42 @@ public class Main {
             readParams(args);*/
 
             // Group execution
-            HashMap<String,Integer> groupParams=new HashMap<String, Integer>();
 
-            groupParams.put(Params.TYPE,Params.TABUSEARCH);
-            groupParams.put(Params.TABU_METHOD,2);
-            groupParams.put(Params.LIST_SIZE,100);
-            groupParams.put(Params.DEPTH,1);
+            //1
+            HashMap<String,Integer> groupParams1=new HashMap<String, Integer>();
+            groupParams1.put(Params.TYPE,Params.TABUSEARCH);
+            groupParams1.put(Params.TABU_METHOD,2);
+            groupParams1.put(Params.LIST_SIZE,100);
+            groupParams1.put(Params.DEPTH,1);
 
-            // Add 2 times TS2
-            paramsList.add(groupParams);
-            paramsList.add(groupParams);
+            // 2
+            HashMap<String,Integer> groupParams2=new HashMap<String, Integer>();
+            groupParams2.put(Params.TYPE,Params.TABUSEARCH);
+            groupParams2.put(Params.TABU_METHOD,2);
+            groupParams2.put(Params.LIST_SIZE,100);
+            groupParams2.put(Params.DEPTH,2);
 
-            // Add 2 times TS3
-            groupParams.put(Params.TABU_METHOD,3);
-            paramsList.add(groupParams);
-            paramsList.add(groupParams);
+            // 3
+            HashMap<String,Integer> groupParams3=new HashMap<String, Integer>();
+            groupParams3.put(Params.TYPE,Params.TABUSEARCH);
+            groupParams3.put(Params.TABU_METHOD,3);
+            groupParams3.put(Params.LIST_SIZE,100);
+            groupParams3.put(Params.DEPTH,1);
+
+            // 4
+            HashMap<String,Integer> groupParams4=new HashMap<String, Integer>();
+            groupParams4.put(Params.TYPE,Params.TABUSEARCH);
+            groupParams4.put(Params.TABU_METHOD,3);
+            groupParams4.put(Params.LIST_SIZE,100);
+            groupParams4.put(Params.DEPTH,2);
+
+
+            // Add times TS2 depth 1
+            paramsList.add(groupParams1);
+            paramsList.add(groupParams2);
+            paramsList.add(groupParams3);
+            paramsList.add(groupParams4);
+
 
 
 
@@ -55,8 +76,8 @@ public class Main {
 
             String path="./data/";
 
-            //for(int i=0;i<dataFiles.length;i++){
-                for(int i=0;i<1;i++){
+            for(int i=4;i<dataFiles.length;i++){
+
 
                 filePath=path + dataFiles[i];
 
@@ -66,19 +87,17 @@ public class Main {
                 String outputFile = "./results/";
                 int start=filePath.lastIndexOf('/')+1;
                 int end=filePath.indexOf(".dat");
-                outputFile+=filePath.substring(start,end)+"_v1v2noCoop.dat";
+                outputFile+=filePath.substring(start,end)+"_v1v2Coop.dat";
 
                 // Group execution
-                //Vector<Manager> instances=createAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
-                //writeGroupCSV(outputFile,instances);
-
-                    Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
-                    myManager.start();
-                    myManager.calculateGroupEvolution();
-                    System.out.println(myManager.getEvolution());
+                Vector<Manager> instances=createCooperativeAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
+                writeGroupCSV(outputFile,instances);
+                System.out.println("Escrito archivo: "+i);
 
 
-
+                    //Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
+                    //myManager.start();
+                    //myManager.calculateGroupEvolution();
 
 
 
@@ -141,6 +160,22 @@ public class Main {
 
             Manager myTabuGroup = new Manager(parser,hashMapList,evaluationLimit,groupMonitorStep);
             instances.addElement(myTabuGroup);
+        }
+
+        return instances;
+    }
+
+    private static Vector<Manager> createCooperativeAlgorithmManagers(int numberOfManager, Parser parser, List<HashMap<String, Integer>> hashMapList,
+                                                           int evaluationLimit,int groupMonitorStep){
+
+        Vector<Manager> instances=new Vector<Manager>();
+
+        for(int i=0;i<numberOfManager;i++){
+
+            Manager myTabuGroup = new Manager(parser,true,4,evaluationLimit,hashMapList,100,groupMonitorStep);
+            myTabuGroup.start();
+            instances.addElement(myTabuGroup);
+            System.out.println(i);
         }
 
         return instances;

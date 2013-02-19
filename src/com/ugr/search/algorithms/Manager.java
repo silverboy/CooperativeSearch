@@ -67,7 +67,6 @@ public class Manager {
         while(!cooperativeInfo.allInstancesFinished()) {
             if(cooperativeInfo.allInstancesStopped()) {
                 cooperativeInfo.updateAlgorithmSolution();
-                System.out.println("Cooperacion: "+i);
                 i++;
             } else {
                 try {

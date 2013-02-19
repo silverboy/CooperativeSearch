@@ -128,7 +128,9 @@ public class TabuSearch extends Algorithm {
             }
             iteration++;
         }
+        if(isCooperative()){
         getCooperativeInfo().finishExecution(getInstanceNumber(), getBestSolution());
+        }
     }
 
     private boolean tabuSearchAdd(int[] solution, byte uMultiplier) {
