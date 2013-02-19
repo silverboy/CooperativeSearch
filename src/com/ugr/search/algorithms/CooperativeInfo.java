@@ -12,7 +12,7 @@ public class CooperativeInfo {
     private int evaluationTime;
     private int instancesStopped;
     private int instancesFinished;
-    private boolean continueExecution;
+    private boolean[] continueExecution;
     private Vector<Integer>[] fitnessAlgorithmEvaluations;
     private int evaluations;
 
@@ -24,8 +24,11 @@ public class CooperativeInfo {
         evaluationTime = evaluations / instances;
         instancesStopped = 0;
         instancesFinished = 0;
-        continueExecution = true;
+        continueExecution = new boolean[instances];
         fitnessAlgorithmEvaluations = new Vector[instances];
+        for(int i=0;i<continueExecution.length;i++){
+            continueExecution[i]=true;
+        }
     }
 
     public int getEvaluationTime() {
@@ -33,15 +36,15 @@ public class CooperativeInfo {
     }
 
 
-    public void changeInformation(int id, BestSolution bestSolution, Vector<Integer> fitnessEvaluations) {
-        continueExecution = false;
+    public synchronized void changeInformation(int id, BestSolution bestSolution, Vector<Integer> fitnessEvaluations) {
+        continueExecution[id] = false;
         algorithmSolutions[id] = bestSolution;
         fitnessAlgorithmEvaluations[id] = fitnessEvaluations;
         instancesStopped++;
     }
 
     public boolean allInstancesStopped() {
-        return (instancesStopped + instancesFinished)  == instances;
+        return instancesStopped == instances;
     }
 
     public boolean allInstancesFinished() {
@@ -53,8 +56,8 @@ public class CooperativeInfo {
         algorithmSolutions[id] = bestSolution;
     }
 
-    public boolean continueExecution() {
-        return continueExecution;
+    public boolean continueExecution(int id) {
+        return continueExecution[id];
     }
 
     public BestSolution getAlgorithmSolution(int id) {
@@ -79,8 +82,10 @@ public class CooperativeInfo {
             }
             id++;
         }
-        continueExecution = true;
         instancesStopped = 0;
+        for(int i=0;i<continueExecution.length;i++){
+            continueExecution[i]=true;
+        }
     }
 
     public BestSolution getBestSolution() {

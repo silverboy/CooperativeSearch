@@ -106,28 +106,33 @@ public class TabuSearch extends Algorithm {
                     tabuSearchDrop(getCurrentSolution());
                     break;
             }
+            //System.out.println("Otra iteracion id: "+getInstanceNumber());
             addFitnessEvolution(getBestSolution().getFitness());
             if(isCooperative() && !fitnessEvalLimitReached()
                     && getEvaluationCount() >= (getCooperativeEval() * getCooperativeInfo().getEvaluationTime())) {
+
+                System.out.println("Paro a cooperar id: "+getInstanceNumber()+"Veces: "+getCooperativeEval());
                 incrementCooperativeEval();
                 getCooperativeInfo().changeInformation(getInstanceNumber(), getBestSolution(), getFitnessEvolution());
-                while(!getCooperativeInfo().continueExecution()) {
+                while(!getCooperativeInfo().continueExecution(getInstanceNumber())) {
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
+                System.out.println("Sigo ejecutandome id: "+getInstanceNumber());
                 if(getCooperativeInfo().solutionChange(getInstanceNumber())) {
-                    setCurrentSolution(Knapsack.copyKnapsackItems(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue()));
-                    setCurrentSolutionFitness(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getFitness());
-                    updateBestSolutionFromCurrent();
-                    tabuList.clearList();
+                    //setCurrentSolution(Knapsack.copyKnapsackItems(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue()));
+                    //setCurrentSolutionFitness(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getFitness());
+                    //updateBestSolutionFromCurrent();
+                    //tabuList.clearList();
                 }
             }
             iteration++;
         }
         getCooperativeInfo().finishExecution(getInstanceNumber(), getBestSolution());
+        System.out.println("He acabado");
     }
 
     private boolean tabuSearchAdd(int[] solution, byte uMultiplier) {

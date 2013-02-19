@@ -63,12 +63,15 @@ public class Manager {
             tabuSearch.enableMonitoring(step);
             tabuSearch.start();
         }
+        int i=1;
         while(!cooperativeInfo.allInstancesFinished()) {
             if(cooperativeInfo.allInstancesStopped()) {
                 cooperativeInfo.updateAlgorithmSolution();
+                System.out.println("Cooperacion: "+i);
+                i++;
             } else {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }

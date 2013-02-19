@@ -72,7 +72,7 @@ public class Main {
                 //Vector<Manager> instances=createAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
                 //writeGroupCSV(outputFile,instances);
 
-                    Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
+                    Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,200,monitorStep);
                     myManager.start();
                     myManager.calculateGroupEvolution();
                     System.out.println(myManager.getEvolution());
