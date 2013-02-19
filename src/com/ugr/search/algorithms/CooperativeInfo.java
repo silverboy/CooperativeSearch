@@ -14,11 +14,13 @@ public class CooperativeInfo {
     private int instancesFinished;
     private boolean continueExecution;
     private Vector<Integer>[] fitnessAlgorithmEvaluations;
+    private int evaluations;
 
     public CooperativeInfo(int instances, int evaluations) {
         this.instances = instances;
         changeCurrentSolution = new boolean[instances];
         algorithmSolutions = new BestSolution[instances];
+        this.evaluations = evaluations;
         evaluationTime = evaluations / 4;
         instancesStopped = 0;
         instancesFinished = 0;
@@ -81,5 +83,9 @@ public class CooperativeInfo {
             }
         }
         return bestSolution;
+    }
+
+    public int getEvaluations() {
+        return evaluations;
     }
 }

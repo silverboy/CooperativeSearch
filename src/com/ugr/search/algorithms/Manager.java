@@ -7,36 +7,25 @@ import java.util.*;
 
 public class Manager {
 
-    private boolean cooperative;
     private int instances;
-    private int numberOfEvaluations;
-    private int tabuListSize;
-    private int[] performances;
-    private int[][] costs;
-    private int[] constraints;
-    private BestSolution bestSolution;
-    private int optimalValue;
     private Parser parser;
     private List<HashMap<String,Integer>> params;
     private List<Algorithm> tabuSearches;
     private CooperativeInfo cooperativeInfo;
+    private int optimalValue;
+    private int groupMonitorStep;
 
     private Vector<Double> evolution;
 
 
     public Manager(Parser parser, boolean cooperative, int instances, int numberOfEvaluations,
-                   int tabuListSize, List<HashMap<String, Integer>> params) {
-        this.performances = parser.getPerformances();
-        this.costs = parser.getCosts();
-        this.constraints = parser.getConstraints();
+                   List<HashMap<String, Integer>> params, int groupMonitorStep) {
         this.optimalValue = parser.getOptimalValue();
-        this.cooperative = cooperative;
         this.instances = instances;
-        this.numberOfEvaluations = numberOfEvaluations;
-        this.tabuListSize = tabuListSize;
         this.parser = parser;
         this.params = params;
         this.tabuSearches = new ArrayList<Algorithm>();
+        this.groupMonitorStep = groupMonitorStep;
         this.cooperativeInfo = new CooperativeInfo(instances, numberOfEvaluations/instances);
     }
 
@@ -60,12 +49,15 @@ public class Manager {
     }
 
     public void start() {
+        int step=groupMonitorStep/instances;
         for(int i = 0; i < instances; i++) {
             TabuSearch tabuSearch = new TabuSearch(i, parser.getPerformances(),
                     parser.getCosts(), parser.getConstraints(), params.get(i),
-                    parser.getOptimalValue(), 500);
+                    parser.getOptimalValue(), cooperativeInfo.getEvaluations());
             tabuSearch.setCooperativeExecution(cooperativeInfo);
+            tabuSearch.enableMonitoring(cooperativeInfo.getEvaluationTime());
             tabuSearches.add(tabuSearch);
+            tabuSearch.enableMonitoring(step);
             tabuSearch.start();
         }
         while(!cooperativeInfo.allInstancesFinished()) {
