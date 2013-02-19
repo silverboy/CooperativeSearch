@@ -62,6 +62,9 @@ public class CooperativeInfo {
     }
 
     public void updateAlgorithmSolution() {
+        for(int i = 0; i < changeCurrentSolution.length; i++) {
+            changeCurrentSolution[i] = false;
+        }
         BestSolution bestSolution = getBestSolution();
         int id = 0;
         for(Vector<Integer> currentFitnessEval : fitnessAlgorithmEvaluations) {
@@ -72,6 +75,7 @@ public class CooperativeInfo {
                 algorithmSolutions[id].setValue(Knapsack.copyKnapsackItems(bestSolution.getValue()));
                 algorithmSolutions[id].setFitness(bestSolution.getFitness());
                 algorithmSolutions[id].setNumEvaluationFitness(bestSolution.getNumEvaluationFitness());
+                changeCurrentSolution[id] = true;
             }
             id++;
         }
@@ -86,7 +90,6 @@ public class CooperativeInfo {
         for(int i = 1; i < algorithmSolutions.length; i++) {
             BestSolution currentSolution = algorithmSolutions[i];
             if(bestSolution.getFitness() < currentSolution.getFitness()) {
-                bestSolution = new BestSolution(algorithmSolutions[0].getOptimalFitness());
                 bestSolution.setValue(Knapsack.copyKnapsackItems(currentSolution.getValue()));
                 bestSolution.setFitness(currentSolution.getFitness());
                 bestSolution.setNumEvaluationFitness(currentSolution.getNumEvaluationFitness());
@@ -97,5 +100,9 @@ public class CooperativeInfo {
 
     public int getEvaluations() {
         return evaluations;
+    }
+
+    public boolean solutionChange(int id) {
+        return changeCurrentSolution[id];
     }
 }

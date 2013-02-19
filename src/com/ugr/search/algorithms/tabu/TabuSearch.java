@@ -118,9 +118,11 @@ public class TabuSearch extends Algorithm {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
-                setCurrentSolution(Knapsack.copyKnapsackItems(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue()));
-                setCurrentSolutionFitness(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getFitness());
-
+                if(getCooperativeInfo().solutionChange(getInstanceNumber())) {
+                    setCurrentSolution(Knapsack.copyKnapsackItems(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue()));
+                    setCurrentSolutionFitness(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getFitness());
+                    tabuList.clearList();
+                }
             }
             iteration++;
         }
