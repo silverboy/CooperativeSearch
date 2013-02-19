@@ -55,7 +55,8 @@ public class Main {
 
             String path="./data/";
 
-            for(int i=0;i<dataFiles.length;i++){
+            //for(int i=0;i<dataFiles.length;i++){
+                for(int i=0;i<1;i++){
 
                 filePath=path + dataFiles[i];
 
@@ -68,8 +69,15 @@ public class Main {
                 outputFile+=filePath.substring(start,end)+"_v1v2noCoop.dat";
 
                 // Group execution
-                Vector<Manager> instances=createAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
-                writeGroupCSV(outputFile,instances);
+                //Vector<Manager> instances=createAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
+                //writeGroupCSV(outputFile,instances);
+
+                    Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
+                    myManager.start();
+                    myManager.calculateGroupEvolution();
+                    System.out.println(myManager.getEvolution());
+
+
 
 
 

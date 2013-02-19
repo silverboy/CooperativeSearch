@@ -107,7 +107,7 @@ public class TabuSearch extends Algorithm {
                     break;
             }
             addFitnessEvolution(getBestSolution().getFitness());
-            if(isCooperative()
+            if(isCooperative() && !fitnessEvalLimitReached()
                     && getEvaluationCount() >= (getCooperativeEval() * getCooperativeInfo().getEvaluationTime())) {
                 incrementCooperativeEval();
                 getCooperativeInfo().changeInformation(getInstanceNumber(), getBestSolution(), getFitnessEvolution());
@@ -121,6 +121,7 @@ public class TabuSearch extends Algorithm {
                 if(getCooperativeInfo().solutionChange(getInstanceNumber())) {
                     setCurrentSolution(Knapsack.copyKnapsackItems(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue()));
                     setCurrentSolutionFitness(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getFitness());
+                    updateBestSolutionFromCurrent();
                     tabuList.clearList();
                 }
             }
