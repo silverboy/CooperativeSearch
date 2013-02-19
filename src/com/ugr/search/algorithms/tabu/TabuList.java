@@ -16,6 +16,11 @@ public class TabuList {
     public TabuList() {
     }
 
+    public void clearList(){
+        solutions.clear();
+
+    }
+
     public void addSolution(int[] solution) {
         // Create copy of solution
         int[] solutionCopy = Knapsack.copyKnapsackItems(solution);
