@@ -77,7 +77,7 @@ public class Main {
             String path="./data/";
 
             //for(int i=3;i<dataFiles.length;i++){
-                for(int i=3;i<4;i++){
+                for(int i=1;i<2;i++){
 
 
                 filePath=path + dataFiles[i];
