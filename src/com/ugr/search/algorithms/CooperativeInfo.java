@@ -41,7 +41,7 @@ public class CooperativeInfo {
     }
 
     public boolean allInstancesStopped() {
-        return instancesStopped == instances;
+        return (instancesStopped + instancesFinished)  == instances;
     }
 
     public boolean allInstancesFinished() {
@@ -80,6 +80,7 @@ public class CooperativeInfo {
             id++;
         }
         continueExecution = true;
+        instancesStopped = 0;
     }
 
     public BestSolution getBestSolution() {
