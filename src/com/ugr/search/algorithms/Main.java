@@ -77,8 +77,8 @@ public class Main {
             String path="./data/";
 
             //for(int i=3;i<dataFiles.length;i++){
-                for(int i=1;i<2;i++){
 
+                int i=6;
 
                 filePath=path + dataFiles[i];
 
@@ -109,7 +109,7 @@ public class Main {
                 Vector<Algorithm> instances=createAlgorithms(runs,parser,evaluationLimit,monitorStep);
                 writeCSV(outputFile,instances);*/
 
-            }
+            //}
         }
     }
 
