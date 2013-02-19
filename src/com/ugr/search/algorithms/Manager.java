@@ -55,7 +55,6 @@ public class Manager {
                     parser.getCosts(), parser.getConstraints(), params.get(i),
                     parser.getOptimalValue(), cooperativeInfo.getEvaluations());
             tabuSearch.setCooperativeExecution(cooperativeInfo);
-            tabuSearch.enableMonitoring(cooperativeInfo.getEvaluationTime());
             tabuSearches.add(tabuSearch);
             tabuSearch.enableMonitoring(step);
             tabuSearch.start();
