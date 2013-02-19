@@ -21,7 +21,7 @@ public class CooperativeInfo {
         changeCurrentSolution = new boolean[instances];
         algorithmSolutions = new BestSolution[instances];
         this.evaluations = evaluations;
-        evaluationTime = evaluations / 4;
+        evaluationTime = evaluations / instances;
         instancesStopped = 0;
         instancesFinished = 0;
         continueExecution = true;

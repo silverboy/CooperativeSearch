@@ -3,6 +3,7 @@ package com.ugr.search.algorithms;
 import com.ugr.search.algorithms.tabu.TabuSearch;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -11,6 +12,8 @@ public class Main {
 
     private static String filePath;
     private static HashMap<String, Integer> params = new HashMap<String, Integer>();
+    private static List<HashMap<String, Integer>> paramsList = new ArrayList<HashMap<String, Integer>>();
+
 
     public static void main(String[] args) {
 
@@ -22,10 +25,31 @@ public class Main {
             int monitorStep=20;
             int runs=30;
 
+            /* Single execution
             params.put(Params.DEPTH, 1);
-            params.put(Params.TABU_METHOD, 2);
+            params.put(Params.TABU_METHOD, 3);
             params.put(Params.LIST_SIZE,100);
-            readParams(args);
+            readParams(args);*/
+
+            // Group execution
+            HashMap<String,Integer> groupParams=new HashMap<String, Integer>();
+
+            groupParams.put(Params.TYPE,Params.TABUSEARCH);
+            groupParams.put(Params.TABU_METHOD,2);
+            groupParams.put(Params.LIST_SIZE,100);
+            groupParams.put(Params.DEPTH,1);
+
+            // Add 2 times TS2
+            paramsList.add(groupParams);
+            paramsList.add(groupParams);
+
+            // Add 2 times TS3
+            groupParams.put(Params.TABU_METHOD,3);
+            paramsList.add(groupParams);
+            paramsList.add(groupParams);
+
+
+
 
             String[] dataFiles={"HP1.dat" ,"HP2.dat" ,"PB1.dat", "PB2.dat" ,"PB4.dat" ,"PB5.dat" ,"PB6.dat" ,"PB7.dat" };
 
@@ -37,17 +61,26 @@ public class Main {
 
                 Parser parser = new Parser(filePath);
 
-                // 30 runs of algorithm
-                Vector<Algorithm> instances=createAlgorithms(runs,parser,evaluationLimit,monitorStep);
-
-                // Write results in CSV file
+                // Output file
                 String outputFile = "./results/";
                 int start=filePath.lastIndexOf('/')+1;
                 int end=filePath.indexOf(".dat");
+                outputFile+=filePath.substring(start,end)+"_v1v2noCoop.dat";
 
-                outputFile+=filePath.substring(start,end)+"_v1only.dat";
+                // Group execution
+                Vector<Manager> instances=createAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
+                writeGroupCSV(outputFile,instances);
 
-                writeCSV(outputFile,instances);
+
+
+
+
+                /*
+                Single execution
+                // 30 runs of algorithm
+                Vector<Algorithm> instances=createAlgorithms(runs,parser,evaluationLimit,monitorStep);
+                writeCSV(outputFile,instances);*/
+
             }
         }
     }
