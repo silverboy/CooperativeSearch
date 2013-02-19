@@ -118,7 +118,9 @@ public class TabuSearch extends Algorithm {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
-                setCurrentSolution(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue());
+                setCurrentSolution(Knapsack.copyKnapsackItems(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getValue()));
+                setCurrentSolutionFitness(getCooperativeInfo().getAlgorithmSolution(getInstanceNumber()).getFitness());
+
             }
             iteration++;
         }

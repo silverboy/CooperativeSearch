@@ -68,7 +68,10 @@ public class CooperativeInfo {
             int evolution = 0;
             if((currentFitnessEval.get(0) - currentFitnessEval.get(4) < 250) &&
                     bestSolution.getFitness() - algorithmSolutions[id].getFitness() > 250){
-                algorithmSolutions[id] = bestSolution;
+                algorithmSolutions[id] = new BestSolution(bestSolution.getOptimalFitness());
+                algorithmSolutions[id].setValue(Knapsack.copyKnapsackItems(bestSolution.getValue()));
+                algorithmSolutions[id].setFitness(bestSolution.getFitness());
+                algorithmSolutions[id].setNumEvaluationFitness(bestSolution.getNumEvaluationFitness());
             }
             id++;
         }
@@ -76,10 +79,17 @@ public class CooperativeInfo {
     }
 
     public BestSolution getBestSolution() {
-        BestSolution bestSolution = algorithmSolutions[0];
-        for(BestSolution currentSolution : algorithmSolutions) {
+        BestSolution bestSolution = new BestSolution(algorithmSolutions[0].getOptimalFitness());
+        bestSolution.setValue(Knapsack.copyKnapsackItems(algorithmSolutions[0].getValue()));
+        bestSolution.setFitness(algorithmSolutions[0].getFitness());
+        bestSolution.setNumEvaluationFitness(algorithmSolutions[0].getNumEvaluationFitness());
+        for(int i = 1; i < algorithmSolutions.length; i++) {
+            BestSolution currentSolution = algorithmSolutions[i];
             if(bestSolution.getFitness() < currentSolution.getFitness()) {
-                bestSolution = currentSolution;
+                bestSolution = new BestSolution(algorithmSolutions[0].getOptimalFitness());
+                bestSolution.setValue(Knapsack.copyKnapsackItems(currentSolution.getValue()));
+                bestSolution.setFitness(currentSolution.getFitness());
+                bestSolution.setNumEvaluationFitness(currentSolution.getNumEvaluationFitness());
             }
         }
         return bestSolution;

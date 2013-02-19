@@ -59,4 +59,8 @@ public class BestSolution {
         return evolution;
     }
 
+    public int getOptimalFitness() {
+        return optimalFitness;
+    }
+
 }
