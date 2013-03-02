@@ -72,9 +72,11 @@ public class CooperativeInfo {
         int id = 0;
         for(Vector<Integer> currentFitnessEval : fitnessAlgorithmEvaluations) {
             int evolution = 0;
-            if((currentFitnessEval.get(0) - currentFitnessEval.get(currentFitnessEval.size() - 1) < 250) &&
-                    bestSolution.getFitness() - algorithmSolutions[id].getFitness() > 250){
-                System.out.println("Cambio solucion  "+id );
+            //if((currentFitnessEval.get(0) - currentFitnessEval.get(currentFitnessEval.size() - 1) < 250) &&
+             //       bestSolution.getFitness() - algorithmSolutions[id].getFitness() > 250){
+                if((currentFitnessEval.get(0) - currentFitnessEval.get(currentFitnessEval.size() - 1) < 250) &&
+                        bestSolution.getFitness() > algorithmSolutions[id].getFitness() ){
+
                 algorithmSolutions[id] = new BestSolution(bestSolution.getOptimalFitness());
                 algorithmSolutions[id].setValue(Knapsack.copyKnapsackItems(bestSolution.getValue()));
                 algorithmSolutions[id].setFitness(bestSolution.getFitness());

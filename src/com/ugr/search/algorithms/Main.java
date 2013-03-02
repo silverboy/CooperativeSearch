@@ -50,19 +50,19 @@ public class Main {
             // 3
             HashMap<String,Integer> groupParams3=new HashMap<String, Integer>();
             groupParams3.put(Params.TYPE,Params.TABUSEARCH);
-            groupParams3.put(Params.TABU_METHOD,3);
-            groupParams3.put(Params.LIST_SIZE,100);
+            groupParams3.put(Params.TABU_METHOD,2);
+            groupParams3.put(Params.LIST_SIZE,60);
             groupParams3.put(Params.DEPTH,1);
 
             // 4
             HashMap<String,Integer> groupParams4=new HashMap<String, Integer>();
             groupParams4.put(Params.TYPE,Params.TABUSEARCH);
-            groupParams4.put(Params.TABU_METHOD,3);
-            groupParams4.put(Params.LIST_SIZE,100);
+            groupParams4.put(Params.TABU_METHOD,2);
+            groupParams4.put(Params.LIST_SIZE,60);
             groupParams4.put(Params.DEPTH,2);
 
 
-            // Add times TS2 depth 1
+            // Add algorithms params to List
             paramsList.add(groupParams1);
             paramsList.add(groupParams2);
             paramsList.add(groupParams3);
@@ -80,31 +80,47 @@ public class Main {
 
                 int i=6;
 
-                filePath=path + dataFiles[i];
+                //filePath=path + dataFiles[i];
+
+                filePath=path + "mknapcb9_29.dat";
 
                 Parser parser = new Parser(filePath);
+
+
+
 
                 // Output file
                 String outputFile = "./results/";
                 int start=filePath.lastIndexOf('/')+1;
                 int end=filePath.indexOf(".dat");
-                outputFile+=filePath.substring(start,end)+"_v1v2Coop.dat";
+                outputFile+=filePath.substring(start,end)+"_v1Coop.dat";
 
-                // Group execution
-                //Vector<Manager> instances=createCooperativeAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
-                //writeGroupCSV(outputFile,instances,true);
-                //System.out.println("Escrito archivo: "+i);
+                TabuSearch tabu=new TabuSearch(1,parser.getPerformances(),parser.getCosts(),parser.getConstraints(),groupParams1,parser.getOptimalValue(),5000);
+                tabu.enableMonitoring(20);
+                tabu.start();
 
-
-                    Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
-                    myManager.start();
             try {
-                myManager.join();
+                tabu.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-            myManager.calculateGroupEvolution();
-            System.out.println(myManager.getEvolution());
+
+            System.out.println(tabu.getBestSolution().getEvolution());
+            System.out.println(tabu.getBestSolution().getFitness());
+            System.out.println(tabu.getBestSolution().getOptimalFitness());
+
+
+
+
+
+            // Group execution
+                //Vector<Manager> instances=createCooperativeAlgorithmManagers(runs,parser,paramsList,evaluationLimit,monitorStep);
+                //writeGroupCSV(outputFile,instances,true);
+
+
+
+                    //Manager myManager=new Manager(parser,true,4,evaluationLimit,paramsList,100,monitorStep);
+                    //myManager.start();
 
 
 
